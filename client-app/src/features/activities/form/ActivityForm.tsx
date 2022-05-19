@@ -1,14 +1,16 @@
 import React, { ChangeEvent, useState } from 'react'
 import { Button, Card, Form } from 'react-bootstrap'
+import LoadingComponent from '../../../app/layout/LoadingComponent'
 import { Activity } from '../../../app/models/activity'
 
 interface Props {
   activity: Activity | undefined
   closeForm: () => void
   createOrEdit: (activity: Activity) => void
+  submitting: boolean
 }
 
-export default function ActivityForm({ activity: selectedActivity, closeForm, createOrEdit }: Props) {
+export default function ActivityForm({ activity: selectedActivity, closeForm, createOrEdit, submitting }: Props) {
   const initialState = selectedActivity ?? {
     id: '',
     title: '',
@@ -40,12 +42,12 @@ export default function ActivityForm({ activity: selectedActivity, closeForm, cr
               <textarea onChange={handleInputChange} className="my-1 form-control" placeholder="Description" value={activity.description} name="description" />
 
               <Form.Control onChange={handleInputChange} className="my-1" placeholder="Category" value={activity.category} name="category" />
-              <Form.Control onChange={handleInputChange} className="my-1" placeholder="Date" value={activity.date} name="date" />
+              <Form.Control type="date" onChange={handleInputChange} className="my-1" placeholder="Date" value={activity.date} name="date" />
               <Form.Control onChange={handleInputChange} className="my-1" placeholder="City" value={activity.city} name="city" />
               <Form.Control onChange={handleInputChange} className="my-1" placeholder="Venue" value={activity.venue} name="venue" />
               <div className="mt-3 btn-group d-flex">
                 <Button variant="primary" type="submit">
-                  Submit
+                  {submitting ? <LoadingComponent isButton={true} content="Submitting" /> : 'Submit'}
                 </Button>
                 <Button onClick={closeForm} variant="secondary" type="button">
                   Cancel

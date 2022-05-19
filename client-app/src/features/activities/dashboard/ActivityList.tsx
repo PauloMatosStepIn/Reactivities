@@ -1,14 +1,24 @@
-import React from 'react'
+import React, { SyntheticEvent, useState } from 'react'
 import { Button } from 'react-bootstrap'
+import LoadingComponent from '../../../app/layout/LoadingComponent'
 import { Activity } from '../../../app/models/activity'
 
 interface Props {
   activities: Activity[]
   selectActivity: (id: string) => void
   deleteActivity: (id: string) => void
+  submitting: boolean
 }
 
-export default function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
+export default function ActivityList({ activities, selectActivity, deleteActivity, submitting }: Props) {
+  const [target, setTarget] = useState('')
+
+  function HandleActivityDelete(e: SyntheticEvent<HTMLButtonElement>, id: string) {
+    e.preventDefault()
+    setTarget(e.currentTarget.name)
+    deleteActivity(id)
+  }
+
   return (
     <>
       {activities.map(activity => (
@@ -22,8 +32,8 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
             <Button onClick={() => selectActivity(activity.id)} className="mx-1 float-end" variant="primary" href="#">
               View
             </Button>
-            <Button onClick={() => deleteActivity(activity.id)} className="mx-1 float-end" variant="danger" href="#">
-              Delete
+            <Button name={activity.id} onClick={e => HandleActivityDelete(e, activity.id)} className="mx-1 float-end" variant="danger" href="#">
+              {submitting && target === activity.id ? <LoadingComponent isButton={true} content="Deleting" /> : <>Delete</>}
             </Button>
           </div>
         </div>
