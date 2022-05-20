@@ -2,12 +2,13 @@ import React from 'react'
 import '../styles.css'
 import { Button, Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import logo from './logo.svg'
+import { useStore } from '../stores/store'
 
-interface Props {
-  openForm: () => void
-}
+export default function NavBar() {
+  const { activityStore } = useStore()
 
-export default function NavBar({ openForm }: Props) {
+  const { openForm } = activityStore
+
   return (
     <Navbar bg="NavColor" variant="dark" sticky="top" expand="sm" collapseOnSelect>
       <Navbar.Brand>
@@ -17,17 +18,9 @@ export default function NavBar({ openForm }: Props) {
       <Navbar.Toggle />
       <Navbar.Collapse>
         <Nav>
-          {/* <NavDropdown title="Products">
-            <NavDropdown.Item href="#">Product 1</NavDropdown.Item>
-            <NavDropdown.Item href="#">Product 2</NavDropdown.Item>
-            <NavDropdown.Item href="#">Product 3</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="#">Promotions</NavDropdown.Item>
-          </NavDropdown> */}
-
           <Nav.Link href="#">Activities</Nav.Link>
           <Nav.Item>
-            <Button onClick={openForm} variant="success">
+            <Button onClick={() => openForm()} variant="success">
               Create Activity
             </Button>
           </Nav.Item>

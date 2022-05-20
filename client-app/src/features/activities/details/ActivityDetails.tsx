@@ -1,14 +1,15 @@
 import React from 'react'
 import { Button, ButtonGroup } from 'react-bootstrap'
-import { Activity } from '../../../app/models/activity'
+import LoadingComponent from '../../../app/layout/LoadingComponent'
+import { useStore } from '../../../app/stores/store'
 
-interface Props {
-  activity: Activity
-  cancelSelectActivity: () => void
-  openForm: (id: string) => void
-}
+export default function ActivityDetails() {
+  const { activityStore } = useStore()
 
-export default function ActivityDetails({ activity, cancelSelectActivity, openForm }: Props) {
+  const { selectedActivity: activity, openForm, cancelSelectedActivity } = activityStore
+
+  if (!activity) return <LoadingComponent />
+
   return (
     <>
       <div className="card fluid" key={activity.id}>
@@ -24,7 +25,7 @@ export default function ActivityDetails({ activity, cancelSelectActivity, openFo
             <Button onClick={() => openForm(activity.id)} variant="primary" href="#">
               Edit
             </Button>
-            <Button onClick={cancelSelectActivity} variant="secondary" href="#">
+            <Button onClick={cancelSelectedActivity} variant="secondary" href="#">
               Cancel
             </Button>
           </div>
