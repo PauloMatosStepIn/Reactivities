@@ -1,14 +1,22 @@
-import React from 'react'
+import { observer } from 'mobx-react-lite'
+import React, { useEffect } from 'react'
 import { Button, ButtonGroup } from 'react-bootstrap'
+import { Link, useParams } from 'react-router-dom'
 import LoadingComponent from '../../../app/layout/LoadingComponent'
 import { useStore } from '../../../app/stores/store'
 
-export default function ActivityDetails() {
+export default observer(function ActivityDetails() {
   const { activityStore } = useStore()
+  const { selectedActivity: activity, loadActivity, loadingInitial } = activityStore
+  let { id } = useParams<{ id: string }>()
 
-  const { selectedActivity: activity, openForm, cancelSelectedActivity } = activityStore
+  useEffect(() => {
+    if (activity === undefined && id) {
+      loadActivity(id)
+    }
+  }, [id, loadActivity])
 
-  if (!activity) return <LoadingComponent />
+  if (loadingInitial || !activity) return <LoadingComponent />
 
   return (
     <>
@@ -22,10 +30,10 @@ export default function ActivityDetails() {
           <p className="card-text">{activity.venue}</p>
 
           <div className="btn-group d-flex">
-            <Button onClick={() => openForm(activity.id)} variant="primary" href="#">
+            <Button as={Link as any} to={`/manage/${activity.id}`} variant="primary" href="#">
               Edit
             </Button>
-            <Button onClick={cancelSelectedActivity} variant="secondary" href="#">
+            <Button as={Link as any} to="/activities" variant="secondary" href="#">
               Cancel
             </Button>
           </div>
@@ -33,4 +41,4 @@ export default function ActivityDetails() {
       </div>
     </>
   )
-}
+})

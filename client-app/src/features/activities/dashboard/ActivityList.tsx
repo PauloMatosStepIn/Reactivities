@@ -1,13 +1,14 @@
 import { observer } from 'mobx-react-lite'
 import React, { SyntheticEvent, useState } from 'react'
 import { Button } from 'react-bootstrap'
+import { Link, NavLink } from 'react-router-dom'
 import LoadingComponent from '../../../app/layout/LoadingComponent'
 import { useStore } from '../../../app/stores/store'
 
 export default observer(function ActivityList() {
   const [target, setTarget] = useState('')
   const { activityStore } = useStore()
-  const { selectActivity, activitiesByDate, deleteActivity, editMode, loading, openDetail } = activityStore
+  const { activitiesByDate, deleteActivity, editMode, loading } = activityStore
 
   function HandleActivityDelete(e: SyntheticEvent<HTMLButtonElement>, id: string) {
     e.preventDefault()
@@ -15,11 +16,11 @@ export default observer(function ActivityList() {
     deleteActivity(id)
   }
 
-  function HandleActivityDetail(e: SyntheticEvent<HTMLButtonElement>, id: string) {
-    //e.preventDefault()
-    setTarget(e.currentTarget.name)
-    openDetail(id)
-  }
+  // function HandleActivityDetail(e: SyntheticEvent<HTMLButtonElement>, id: string) {
+  //   //e.preventDefault()
+  //   setTarget(e.currentTarget.name)
+  //   openDetail(id)
+  // }
 
   return (
     <>
@@ -31,8 +32,8 @@ export default observer(function ActivityList() {
             <p className="card-text">{activity.description}</p>
             <p className="card-text">{activity.venue}</p>
             <p className="card-text">{activity.category}</p>
-            <Button onClick={e => HandleActivityDetail(e, activity.id)} className="mx-1 float-end" variant="primary" href="#">
-              View
+            <Button as={NavLink as any} to={`/activities/${activity.id}`} className="mx-1 float-end" variant="primary">
+              Submit
             </Button>
             <Button name={activity.id} onClick={e => HandleActivityDelete(e, activity.id)} className="mx-1 float-end" variant="danger" href="#">
               {loading && target === activity.id ? <LoadingComponent isButton={true} content="Deleting" /> : <>Delete</>}

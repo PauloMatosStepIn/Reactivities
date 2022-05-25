@@ -1,15 +1,20 @@
 import { observer } from 'mobx-react-lite'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import { Button, Card, Form } from 'react-bootstrap'
+import { useParams, useNavigate } from 'react-router-dom'
 import LoadingComponent from '../../../app/layout/LoadingComponent'
 import { Activity } from '../../../app/models/activity'
 import { useStore } from '../../../app/stores/store'
+import { v4 as uuid } from 'uuid'
 
 export default observer(function ActivityForm() {
-  const { activityStore } = useStore()
-  const { selectedActivity, closeForm, createActivity, updateActivity, loading } = activityStore
+  const navigate = useNavigate()
 
-  const initialState = selectedActivity ?? {
+  const { activityStore } = useStore()
+  const { loadActivity, selectedActivity, createActivity, updateActivity, loading, loadingInitial } = activityStore
+  const { id } = useParams<{ id: string }>()
+
+  const [activity, setActivity] = useState({
     id: '',
     title: '',
     category: '',
@@ -17,18 +22,40 @@ export default observer(function ActivityForm() {
     date: '',
     city: '',
     venue: ''
-  }
+  })
 
-  const [activity, setActivity] = useState(initialState)
+  useEffect(() => {
+    if (id) loadActivity(id).then(activity => setActivity(activity!))
+    else {
+      setActivity({
+        id: '',
+        title: '',
+        category: '',
+        description: '',
+        date: '',
+        city: '',
+        venue: ''
+      })
+    }
+  }, [id, loadActivity])
 
   function handleSubmit() {
-    activity.id ? updateActivity(activity) : createActivity(activity)
+    // activity.id ? updateActivity(activity) : createActivity(activity)
+    console.log('handleSubmit')
+    if (activity.id.length === 0) {
+      let newActivity = { ...activity, id: uuid() }
+      createActivity(newActivity).then(() => navigate(`/activities/${newActivity.id}`))
+    } else {
+      updateActivity(activity).then(() => navigate(`/activities/${activity.id}`))
+    }
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = event.target
     setActivity({ ...activity, [name]: value })
   }
+
+  if (loadingInitial) return <LoadingComponent content="Loading Activity..." />
 
   return (
     <>
@@ -48,14 +75,14 @@ export default observer(function ActivityForm() {
               <Form.Control type="date" onChange={handleInputChange} className="my-1" placeholder="Date" value={activity.date} name="date" />
               <Form.Control onChange={handleInputChange} className="my-1" placeholder="City" value={activity.city} name="city" />
               <Form.Control onChange={handleInputChange} className="my-1" placeholder="Venue" value={activity.venue} name="venue" />
-              <div className="mt-3 btn-group d-flex">
-                <Button variant="primary" type="submit">
-                  {loading ? <LoadingComponent isButton={true} content="Submitting" /> : 'Submit'}
-                </Button>
-                <Button onClick={closeForm} variant="secondary" type="button">
-                  Cancel
-                </Button>
-              </div>
+            </Form.Group>
+            <Form.Group className="mt-3 btn-group d-flex">
+              <Button variant="primary" type="submit">
+                {loading ? <LoadingComponent isButton={true} content="Submitting" /> : 'Submit'}
+              </Button>
+              <Button onClick={() => navigate(`/activities/${activity.id}`)} variant="secondary" type="button">
+                Cancel
+              </Button>
             </Form.Group>
           </Form>
         </Card.Body>
