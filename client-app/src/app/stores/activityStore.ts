@@ -18,6 +18,16 @@ export default class ActivityStore {
     return Array.from(this.activityRegistry.values()).sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
   }
 
+  get GroupedActivities() {
+    return Object.entries(
+      this.activitiesByDate.reduce((activities, activity) => {
+        const date = activity.date
+        activities[date] = activities[date] ? [...activities[date], activity] : [activity]
+        return activities
+      }, {} as { [date: string]: Activity[] })
+    )
+  }
+
   loadActivities = async () => {
     this.loadingInitial = true
     try {
@@ -65,28 +75,6 @@ export default class ActivityStore {
   setLoadingInitial = (state: boolean) => {
     this.loadingInitial = state
   }
-
-  // selectActivity = (id: string) => {
-  //   this.selectedActivity = this.activityRegistry.get(id)
-  // }
-  // cancelSelectedActivity = () => {
-  //   this.selectedActivity = undefined
-  // }
-
-  // openDetail = (id: string) => {
-  //   this.selectActivity(id)
-  //   this.editMode = false
-  // }
-
-  // openForm = (id?: string) => {
-  //   id ? this.selectActivity(id) : this.cancelSelectedActivity()
-  //   this.editMode = true
-  // }
-
-  // closeForm = () => {
-  //   //this.cancelSelectedActivity()
-  //   this.editMode = false
-  // }
 
   createActivity = async (activity: Activity) => {
     this.loading = true
