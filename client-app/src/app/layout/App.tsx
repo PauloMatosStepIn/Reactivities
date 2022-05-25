@@ -8,6 +8,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import HomePage from '../../features/home/HomePage'
 import ActivityForm from '../../features/activities/form/ActivityForm'
 import ActivityDetails from '../../features/activities/details/ActivityDetails'
+import TestErrors from '../../features/errors/TestError'
 
 function App() {
   const location = useLocation()
@@ -23,6 +24,7 @@ function App() {
           <Route path="/activities/:id" element={<ActivityDetails />} />
           <Route path="/createActivity" element={<ActivityForm />} />
           <Route path="/manage/:id" element={<ActivityForm />} />
+          <Route path="/errors" element={<TestErrors />} />
         </Routes>
       </Container>
     </>
