@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import { observer } from 'mobx-react-lite'
 import React, { useEffect } from 'react'
 import { Button, ButtonGroup } from 'react-bootstrap'
@@ -25,7 +26,7 @@ export default observer(function ActivityDetails() {
           <img src={`/assets/categoryImages/${activity.category}.jpg`} className="card-img-top" />
 
           <h5 className="card-title">{activity.title}</h5>
-          <h6 className="card-subtitle mb-2 text-muted">{activity.date}</h6>
+          <h6 className="card-subtitle mb-2 text-muted">{format(activity.date!, 'dd MMM yyyy h:mm aa')}</h6>
           <p className="card-text">{activity.description}</p>
           <p className="card-text">{activity.venue}</p>
 
