@@ -7,6 +7,7 @@ import { Row } from 'react-bootstrap'
 interface Props {
   placeholder: string
   name: string
+  type?: string
   label?: string
 }
 

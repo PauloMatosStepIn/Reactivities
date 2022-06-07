@@ -7,6 +7,8 @@ using Persistence;
 
 namespace API.Controllers
 {
+
+  [AllowAnonymous]
   [ApiController]
   [Route("api/[controller]")]
   public class ActivitiesController : BaseApiController
